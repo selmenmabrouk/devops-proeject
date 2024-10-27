@@ -149,6 +149,15 @@ public class InstructorServiceTest {
         assertEquals(2, result.size());
         verify(instructorRepository, times(1)).findAllByRegistrationDateAfter(LocalDate.of(2020, 1, 1));
     }
+    @Test
+    public void testRetrieveInstructorById_NotFound() {
+        // Arrange
+
+        when(instructorRepository.findById(1L)).thenReturn(Optional.empty()); // Simplification
+
+        // Act & Assert
+        assertThrows(RuntimeException.class, () -> instructorServices.retrieveInstructorById(1L)); // Expression lambda
+    }
 
 
 }
