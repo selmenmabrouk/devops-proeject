@@ -64,5 +64,24 @@ public class InstructorServiceTest {
         assertEquals(instructor.getNumInstructor(), result.getNumInstructor());
         verify(instructorRepository, times(1)).save(instructor);
     }
+    @Test
+    public void testAddInstructorAndAssignToCourse() {
+
+        Instructor instructor = new Instructor(1L, "John", "Doe", LocalDate.of(2020, 1, 15), new HashSet<>());
+        Course course = new Course(1L, 1, TypeCourse.COLLECTIVE_ADULT, Support.SNOWBOARD, 100.0f, 60, null);
+
+        when(courseRepository.findById(1L)).thenReturn(Optional.of(course));
+        when(instructorRepository.save(any(Instructor.class))).thenReturn(instructor);
+
+
+        Instructor assignedInstructor = instructorServices.addInstructorAndAssignToCourse(instructor, 1L);
+
+
+        assertNotNull(assignedInstructor);
+        assertEquals(instructor.getNumInstructor(), assignedInstructor.getNumInstructor());
+        assertTrue(assignedInstructor.getCourses().contains(course)); // Assuming you have a method to get courses
+        verify(courseRepository, times(1)).findById(1L);
+        verify(instructorRepository, times(1)).save(instructor);
+    }
 
 }
