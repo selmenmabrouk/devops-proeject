@@ -107,6 +107,22 @@ public class InstructorServiceTest {
         verify(courseRepository, times(1)).findById(99L);
         verify(instructorRepository, times(0)).save(instructor);
     }
+    @Test
+    public void testUpdateInstructor() {
+        // Arrange
+        Instructor existingInstructor = new Instructor(1L, "John", "Doe", LocalDate.of(2020, 1, 15), null);
+        when(instructorRepository.findById(1L)).thenReturn(Optional.of(existingInstructor));
 
+        // Supposons que nous voulons mettre à jour le nom de l'instructeur
+        Instructor updatedInstructor = new Instructor(1L, "John", "Smith", LocalDate.of(2020, 1, 15), null);
+
+        // Act
+        Instructor result = instructorServices.updateInstructor(updatedInstructor);
+
+        // Assert
+        assertEquals("John", result.getFirstName());
+        assertEquals("Smith", result.getLastName());
+        verify(instructorRepository).save(updatedInstructor);
+    }
 
 }
