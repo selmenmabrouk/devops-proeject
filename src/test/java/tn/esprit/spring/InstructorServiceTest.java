@@ -152,12 +152,15 @@ public class InstructorServiceTest {
     @Test
     public void testRetrieveInstructorById_NotFound() {
         // Arrange
-
-        when(instructorRepository.findById(1L)).thenReturn(Optional.empty()); // Simplification
+        when(instructorRepository.findById(1L)).thenReturn(Optional.empty());
 
         // Act & Assert
-        assertThrows(RuntimeException.class, () -> instructorServices.retrieveInstructorById(1L)); // Expression lambda
+        Exception exception = assertThrows(RuntimeException.class, () -> instructorServices.retrieveInstructorById(1L));
+
+        // Check the exception message
+        assertEquals("Instructor not found", exception.getMessage());
     }
+
 
 
 }

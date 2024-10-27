@@ -78,8 +78,10 @@ public class InstructorServicesImpl implements IInstructorServices{
         return instructorRepository.findByNameAndSurname(name, surname);
     }
     public Optional<Instructor> retrieveInstructorById(Long id) {
-        return instructorRepository.findById(id);
+        return Optional.ofNullable(instructorRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Instructor not found")));
     }
+
 
 
 
