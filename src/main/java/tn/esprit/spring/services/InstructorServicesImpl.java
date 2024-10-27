@@ -7,8 +7,10 @@ import tn.esprit.spring.entities.Instructor;
 import tn.esprit.spring.repositories.ICourseRepository;
 import tn.esprit.spring.repositories.IInstructorRepository;
 
+import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 @AllArgsConstructor
@@ -46,6 +48,22 @@ public class InstructorServicesImpl implements IInstructorServices{
         instructor.setCourses(courseSet);
         return instructorRepository.save(instructor);
     }
+    public List<Instructor> retrieveInstructorsAfterRegistrationDate(LocalDate registrationDate) {
+        return instructorRepository.findAllByRegistrationDateAfter(registrationDate);
+    }
+
+    @Override
+    public List<Instructor> retrieveInstructorsByRegistrationDate(LocalDate date) {
+        return instructorRepository.findAllByRegistrationDateAfter(date);
+    }
+
+    public Optional<Instructor> retrieveInstructorByNameAndSurname(String name, String surname) {
+        return instructorRepository.findByNameAndSurname(name, surname);
+    }
+    public Optional<Instructor> retrieveInstructorById(Long id) {
+        return instructorRepository.findById(id);
+    }
+
 
 
 }
