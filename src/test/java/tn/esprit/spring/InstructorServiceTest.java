@@ -50,5 +50,19 @@ public class InstructorServiceTest {
         assertEquals(2, result.size());
         verify(instructorRepository, times(1)).findAll();
     }
+    @Test
+    public void testAddInstructor() {
+
+        Instructor instructor = new Instructor(1L, "John", "Doe", LocalDate.of(2020, 1, 15), null);
+        when(instructorRepository.save(instructor)).thenReturn(instructor);
+
+
+        Instructor result = instructorServices.addInstructor(instructor);
+
+
+        assertNotNull(result);
+        assertEquals(instructor.getNumInstructor(), result.getNumInstructor());
+        verify(instructorRepository, times(1)).save(instructor);
+    }
 
 }
