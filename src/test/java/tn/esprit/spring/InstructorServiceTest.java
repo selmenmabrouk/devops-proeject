@@ -83,5 +83,18 @@ public class InstructorServiceTest {
         verify(courseRepository, times(1)).findById(1L);
         verify(instructorRepository, times(1)).save(instructor);
     }
+    //Tests avancés
+    @Test
+    public void testAddInstructor_DuplicateValidation() {
+        // Arrange
+        Instructor instructor = new Instructor(1L, "John", "Doe", LocalDate.of(2020, 1, 15), new HashSet<>());
+        when(instructorRepository.findByNameAndSurname("John", "Doe")).thenReturn(Optional.of(instructor));
+
+        // Act & Assert
+        Exception exception = assertThrows(RuntimeException.class, () -> instructorServices.addInstructor(instructor));
+        assertEquals("Instructor already exists", exception.getMessage());
+        verify(instructorRepository, times(0)).save(instructor);
+    }
+
 
 }
