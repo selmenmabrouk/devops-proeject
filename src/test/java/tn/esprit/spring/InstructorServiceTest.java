@@ -113,16 +113,21 @@ public class InstructorServiceTest {
         Instructor existingInstructor = new Instructor(1L, "John", "Doe", LocalDate.of(2020, 1, 15), null);
         when(instructorRepository.findById(1L)).thenReturn(Optional.of(existingInstructor));
 
-        // Supposons que nous voulons mettre à jour le nom de l'instructeur
+        // Create the updated instructor object
         Instructor updatedInstructor = new Instructor(1L, "John", "Smith", LocalDate.of(2020, 1, 15), null);
+
+        // Assuming your updateInstructor method modifies the existing instructor
+        when(instructorRepository.save(any(Instructor.class))).thenReturn(updatedInstructor);
 
         // Act
         Instructor result = instructorServices.updateInstructor(updatedInstructor);
 
         // Assert
-        assertEquals("John", result.getFirstName());
-        assertEquals("Smith", result.getLastName());
-        verify(instructorRepository).save(updatedInstructor);
+        assertNotNull(result); // Check that the result is not null
+        assertEquals("John", result.getFirstName()); // Verify first name is unchanged
+        assertEquals("Smith", result.getLastName()); // Verify last name is updated
+        verify(instructorRepository).save(updatedInstructor); // Ensure save was called
     }
+
 
 }

@@ -37,9 +37,19 @@ public class InstructorServicesImpl implements IInstructorServices{
     }
 
     @Override
-    public Instructor updateInstructor(Instructor instructor) {
-        return instructorRepository.save(instructor);
+    public Instructor updateInstructor(Instructor updatedInstructor) {
+        Optional<Instructor> existingInstructorOpt = instructorRepository.findById(updatedInstructor.getNumInstructor());
+        if (existingInstructorOpt.isPresent()) {
+            Instructor existingInstructor = existingInstructorOpt.get();
+            existingInstructor.setFirstName(updatedInstructor.getFirstName());
+            existingInstructor.setLastName(updatedInstructor.getLastName());
+            // Update other fields as necessary
+            return instructorRepository.save(existingInstructor);
+        } else {
+            throw new RuntimeException("Instructor not found");
+        }
     }
+
 
     @Override
     public Instructor retrieveInstructor(Long numInstructor) {
