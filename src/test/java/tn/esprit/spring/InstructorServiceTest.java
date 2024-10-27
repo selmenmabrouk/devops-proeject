@@ -134,7 +134,21 @@ public class InstructorServiceTest {
                         updatedInstructor.getNumInstructor().equals(instructor.getNumInstructor())
         ));
     }
+    @Test
+    public void testRetrieveInstructorsByRegistrationDate() {
+        // Arrange
+        Instructor instructor1 = new Instructor(1L, "John", "Doe", LocalDate.of(2020, 1, 15), new HashSet<>());
+        Instructor instructor2 = new Instructor(2L, "Jane", "Smith", LocalDate.of(2021, 2, 20), new HashSet<>());
+        List<Instructor> instructors = Arrays.asList(instructor1, instructor2);
+        when(instructorRepository.findAllByRegistrationDateAfter(LocalDate.of(2020, 1, 1))).thenReturn(instructors);
 
+        // Act
+        List<Instructor> result = instructorServices.retrieveInstructorsByRegistrationDate(LocalDate.of(2020, 1, 1));
+
+        // Assert
+        assertEquals(2, result.size());
+        verify(instructorRepository, times(1)).findAllByRegistrationDateAfter(LocalDate.of(2020, 1, 1));
+    }
 
 
 }
