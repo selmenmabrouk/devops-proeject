@@ -116,7 +116,7 @@ public class InstructorServiceTest {
         // Create the updated instructor object
         Instructor updatedInstructor = new Instructor(1L, "John", "Smith", LocalDate.of(2020, 1, 15), null);
 
-        // Assuming your updateInstructor method modifies the existing instructor
+        // Mock save method to return the updated instructor
         when(instructorRepository.save(any(Instructor.class))).thenReturn(updatedInstructor);
 
         // Act
@@ -126,8 +126,15 @@ public class InstructorServiceTest {
         assertNotNull(result); // Check that the result is not null
         assertEquals("John", result.getFirstName()); // Verify first name is unchanged
         assertEquals("Smith", result.getLastName()); // Verify last name is updated
-        verify(instructorRepository).save(updatedInstructor); // Ensure save was called
+
+        // Verify that save was called with an Instructor object that has the expected properties
+        verify(instructorRepository).save(argThat(instructor ->
+                "John".equals(instructor.getFirstName()) &&
+                        "Smith".equals(instructor.getLastName()) &&
+                        updatedInstructor.getNumInstructor().equals(instructor.getNumInstructor())
+        ));
     }
+
 
 
 }
