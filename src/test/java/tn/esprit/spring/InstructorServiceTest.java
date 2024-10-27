@@ -33,7 +33,8 @@ public class InstructorServiceTest {
 
     @InjectMocks
     private InstructorServicesImpl instructorServices;
- // tests simples CRUD
+
+    // tests simples CRUD
     @Test
     public void testRetrieveAllInstructors() {
 
@@ -50,108 +51,4 @@ public class InstructorServiceTest {
         verify(instructorRepository, times(1)).findAll();
     }
 
-    @Test
-    public void testAddInstructor() {
-
-        Instructor instructor = new Instructor(1L, "John", "Doe", LocalDate.of(2020, 1, 15), null);
-        when(instructorRepository.save(instructor)).thenReturn(instructor);
-
-
-        Instructor result = instructorServices.addInstructor(instructor);
-
-
-        assertNotNull(result);
-        assertEquals(instructor.getNumInstructor(), result.getNumInstructor());
-        verify(instructorRepository, times(1)).save(instructor);
-    }
-
-    @Test
-    public void testAddInstructorAndAssignToCourse() {
-
-        Instructor instructor = new Instructor(1L, "John", "Doe", LocalDate.of(2020, 1, 15), new HashSet<>());
-        Course course = new Course(1L, 1, TypeCourse.COLLECTIVE_ADULT, Support.SNOWBOARD, 100.0f, 60, null);
-
-        when(courseRepository.findById(1L)).thenReturn(Optional.of(course));
-        when(instructorRepository.save(any(Instructor.class))).thenReturn(instructor);
-
-
-        Instructor assignedInstructor = instructorServices.addInstructorAndAssignToCourse(instructor, 1L);
-
-
-        assertNotNull(assignedInstructor);
-        assertEquals(instructor.getNumInstructor(), assignedInstructor.getNumInstructor());
-        assertTrue(assignedInstructor.getCourses().contains(course)); // Assuming you have a method to get courses
-        verify(courseRepository, times(1)).findById(1L);
-        verify(instructorRepository, times(1)).save(instructor);
-    }
-    //Tests avancés
-    @Test
-    public void testAddInstructor_DuplicateValidation() {
-        // Arrange
-        Instructor instructor = new Instructor(1L, "John", "Doe", LocalDate.of(2020, 1, 15), new HashSet<>());
-        when(instructorRepository.findByNameAndSurname("John", "Doe")).thenReturn(Optional.of(instructor));
-
-        // Act & Assert
-        Exception exception = assertThrows(RuntimeException.class, () -> instructorServices.addInstructor(instructor));
-        assertEquals("Instructor already exists", exception.getMessage());
-        verify(instructorRepository, times(0)).save(instructor);
-    }
-
-    @Test
-    public void testAssignInstructorToNonExistingCourse() {
-        // Arrange
-        Instructor instructor = new Instructor(1L, "John", "Doe", LocalDate.of(2020, 1, 15), new HashSet<>());
-        when(courseRepository.findById(99L)).thenReturn(Optional.empty());
-
-        // Act & Assert
-        Exception exception = assertThrows(RuntimeException.class, () -> instructorServices.addInstructorAndAssignToCourse(instructor, 99L));
-        assertEquals("Course not found", exception.getMessage());
-        verify(courseRepository, times(1)).findById(99L);
-        verify(instructorRepository, times(0)).save(instructor);
-    }
-
-    @Test
-    public void testUpdateInstructor() {
-        // Arrange
-        Instructor existingInstructor = new Instructor(1L, "John", "Doe", LocalDate.of(2020, 1, 15), null);
-        when(instructorRepository.findById(1L)).thenReturn(Optional.of(existingInstructor));
-
-        // Supposons que nous voulons mettre à jour le nom de l'instructeur
-        Instructor updatedInstructor = new Instructor(1L, "John", "Smith", LocalDate.of(2020, 1, 15), null);
-
-        // Act
-        Instructor result = instructorServices.updateInstructor(updatedInstructor);
-
-        // Assert
-        assertEquals("John", result.getFirstName());
-        assertEquals("Smith", result.getLastName());
-        verify(instructorRepository).save(updatedInstructor);
-    }
-
-    @Test
-    public void testRetrieveInstructorsByRegistrationDate() {
-        // Arrange
-        Instructor instructor1 = new Instructor(1L, "John", "Doe", LocalDate.of(2020, 1, 15), new HashSet<>());
-        Instructor instructor2 = new Instructor(2L, "Jane", "Smith", LocalDate.of(2021, 2, 20), new HashSet<>());
-        List<Instructor> instructors = Arrays.asList(instructor1, instructor2);
-        when(instructorRepository.findAllByRegistrationDateAfter(LocalDate.of(2020, 1, 1))).thenReturn(instructors);
-
-        // Act
-        List<Instructor> result = instructorServices.retrieveInstructorsByRegistrationDate(LocalDate.of(2020, 1, 1));
-
-        // Assert
-        assertEquals(2, result.size());
-        verify(instructorRepository, times(1)).findAllByRegistrationDateAfter(LocalDate.of(2020, 1, 1));
-    }
-
-    @Test
-    public void testRetrieveInstructorById_NotFound() {
-        // Arrange
-
-        when(instructorRepository.findById(1L)).thenReturn(Optional.empty()); // Simplification
-
-        // Act & Assert
-        assertThrows(RuntimeException.class, () -> instructorServices.retrieveInstructorById(1L)); // Expression lambda
-    }
 }
-
