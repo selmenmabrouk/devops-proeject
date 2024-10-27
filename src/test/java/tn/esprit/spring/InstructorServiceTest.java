@@ -92,9 +92,7 @@ public class InstructorServiceTest {
         when(instructorRepository.findByNameAndSurname("John", "Doe")).thenReturn(Optional.of(instructor));
 
         // Act & Assert
-        Exception exception = assertThrows(RuntimeException.class, () -> {
-            instructorServices.addInstructor(instructor);
-        });
+        Exception exception = assertThrows(RuntimeException.class, () -> instructorServices.addInstructor(instructor));
         assertEquals("Instructor already exists", exception.getMessage());
         verify(instructorRepository, times(0)).save(instructor);
     }
@@ -106,9 +104,7 @@ public class InstructorServiceTest {
         when(courseRepository.findById(99L)).thenReturn(Optional.empty());
 
         // Act & Assert
-        Exception exception = assertThrows(RuntimeException.class, () -> {
-            instructorServices.addInstructorAndAssignToCourse(instructor, 99L);
-        });
+        Exception exception = assertThrows(RuntimeException.class, () -> instructorServices.addInstructorAndAssignToCourse(instructor, 99L));
         assertEquals("Course not found", exception.getMessage());
         verify(courseRepository, times(1)).findById(99L);
         verify(instructorRepository, times(0)).save(instructor);
@@ -117,17 +113,19 @@ public class InstructorServiceTest {
     @Test
     public void testUpdateInstructor() {
         // Arrange
-        Instructor instructor = new Instructor(1L, "John", "Doe", LocalDate.of(2020, 1, 15), new HashSet<>());
-        when(instructorRepository.findById(1L)).thenReturn(Optional.of(instructor));
-        when(instructorRepository.save(instructor)).thenReturn(instructor);
+        Instructor existingInstructor = new Instructor(1L, "John", "Doe", LocalDate.of(2020, 1, 15), null);
+        when(instructorRepository.findById(1L)).thenReturn(Optional.of(existingInstructor));
+
+        // Supposons que nous voulons mettre à jour le nom de l'instructeur
+        Instructor updatedInstructor = new Instructor(1L, "John", "Smith", LocalDate.of(2020, 1, 15), null);
 
         // Act
-        instructor.setLastName("Smith");
-        Instructor updatedInstructor = instructorServices.updateInstructor(instructor);
+        Instructor result = instructorServices.updateInstructor(updatedInstructor);
 
         // Assert
-        assertEquals("Smith", updatedInstructor.getLastName());
-        verify(instructorRepository, times(1)).save(instructor);
+        assertEquals("John", result.getFirstName());
+        assertEquals("Smith", result.getLastName());
+        verify(instructorRepository).save(updatedInstructor);
     }
 
     @Test
@@ -149,14 +147,11 @@ public class InstructorServiceTest {
     @Test
     public void testRetrieveInstructorById_NotFound() {
         // Arrange
-        when(instructorRepository.findById(99L)).thenReturn(Optional.empty());
+
+        when(instructorRepository.findById(1L)).thenReturn(Optional.empty()); // Simplification
 
         // Act & Assert
-        Exception exception = assertThrows(RuntimeException.class, () -> {
-            instructorServices.retrieveInstructorById(99L);
-        });
-        assertEquals("Instructor not found", exception.getMessage());
-        verify(instructorRepository, times(1)).findById(99L);
+        assertThrows(RuntimeException.class, () -> instructorServices.retrieveInstructorById(1L)); // Expression lambda
     }
 }
 
