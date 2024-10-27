@@ -86,22 +86,18 @@ public class InstructorServiceTest {
     //Tests avancés
     @Test
     public void testAddInstructor_DuplicateValidation() {
-        // Arrange
         Instructor instructor = new Instructor(1L, "John", "Doe", LocalDate.of(2020, 1, 15), new HashSet<>());
         when(instructorRepository.findByNameAndSurname("John", "Doe")).thenReturn(Optional.of(instructor));
 
-        // Act & Assert
         Exception exception = assertThrows(RuntimeException.class, () -> instructorServices.addInstructor(instructor));
         assertEquals("Instructor already exists", exception.getMessage());
         verify(instructorRepository, times(0)).save(instructor);
     }
     @Test
     public void testAssignInstructorToNonExistingCourse() {
-        // Arrange
         Instructor instructor = new Instructor(1L, "John", "Doe", LocalDate.of(2020, 1, 15), new HashSet<>());
         when(courseRepository.findById(99L)).thenReturn(Optional.empty());
 
-        // Act & Assert
         Exception exception = assertThrows(RuntimeException.class, () -> instructorServices.addInstructorAndAssignToCourse(instructor, 99L));
         assertEquals("Course not found", exception.getMessage());
         verify(courseRepository, times(1)).findById(99L);
@@ -109,25 +105,22 @@ public class InstructorServiceTest {
     }
     @Test
     public void testUpdateInstructor() {
-        // Arrange
+
         Instructor existingInstructor = new Instructor(1L, "John", "Doe", LocalDate.of(2020, 1, 15), null);
         when(instructorRepository.findById(1L)).thenReturn(Optional.of(existingInstructor));
 
-        // Create the updated instructor object
         Instructor updatedInstructor = new Instructor(1L, "John", "Smith", LocalDate.of(2020, 1, 15), null);
 
-        // Mock save method to return the updated instructor
         when(instructorRepository.save(any(Instructor.class))).thenReturn(updatedInstructor);
 
-        // Act
+
         Instructor result = instructorServices.updateInstructor(updatedInstructor);
 
-        // Assert
+
         assertNotNull(result); // Check that the result is not null
         assertEquals("John", result.getFirstName()); // Verify first name is unchanged
         assertEquals("Smith", result.getLastName()); // Verify last name is updated
 
-        // Verify that save was called with an Instructor object that has the expected properties
         verify(instructorRepository).save(argThat(instructor ->
                 "John".equals(instructor.getFirstName()) &&
                         "Smith".equals(instructor.getLastName()) &&
@@ -136,28 +129,28 @@ public class InstructorServiceTest {
     }
     @Test
     public void testRetrieveInstructorsByRegistrationDate() {
-        // Arrange
+
         Instructor instructor1 = new Instructor(1L, "John", "Doe", LocalDate.of(2020, 1, 15), new HashSet<>());
         Instructor instructor2 = new Instructor(2L, "Jane", "Smith", LocalDate.of(2021, 2, 20), new HashSet<>());
         List<Instructor> instructors = Arrays.asList(instructor1, instructor2);
         when(instructorRepository.findAllByRegistrationDateAfter(LocalDate.of(2020, 1, 1))).thenReturn(instructors);
 
-        // Act
+
         List<Instructor> result = instructorServices.retrieveInstructorsByRegistrationDate(LocalDate.of(2020, 1, 1));
 
-        // Assert
+
         assertEquals(2, result.size());
         verify(instructorRepository, times(1)).findAllByRegistrationDateAfter(LocalDate.of(2020, 1, 1));
     }
     @Test
     public void testRetrieveInstructorById_NotFound() {
-        // Arrange
+
         when(instructorRepository.findById(1L)).thenReturn(Optional.empty());
 
-        // Act & Assert
+
         Exception exception = assertThrows(RuntimeException.class, () -> instructorServices.retrieveInstructorById(1L));
 
-        // Check the exception message
+
         assertEquals("Instructor not found", exception.getMessage());
     }
 
