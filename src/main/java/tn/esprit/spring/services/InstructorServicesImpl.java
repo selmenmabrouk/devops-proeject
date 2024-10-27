@@ -22,6 +22,12 @@ public class InstructorServicesImpl implements IInstructorServices{
 
     @Override
     public Instructor addInstructor(Instructor instructor) {
+        Optional<Instructor> existingInstructor = instructorRepository.findByNameAndSurname(instructor.getFirstName(), instructor.getLastName());
+
+
+        if (existingInstructor.isPresent()) {
+            throw new RuntimeException("Instructor already exists");
+        }
         return instructorRepository.save(instructor);
     }
 
@@ -42,7 +48,8 @@ public class InstructorServicesImpl implements IInstructorServices{
 
     @Override
     public Instructor addInstructorAndAssignToCourse(Instructor instructor, Long numCourse) {
-        Course course = courseRepository.findById(numCourse).orElse(null);
+        Course course = courseRepository.findById(numCourse)
+                .orElseThrow(() -> new RuntimeException("Course not found"));
         Set<Course> courseSet = new HashSet<>();
         courseSet.add(course);
         instructor.setCourses(courseSet);
