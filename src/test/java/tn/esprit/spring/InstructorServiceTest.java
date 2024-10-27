@@ -95,6 +95,18 @@ public class InstructorServiceTest {
         assertEquals("Instructor already exists", exception.getMessage());
         verify(instructorRepository, times(0)).save(instructor);
     }
+    @Test
+    public void testAssignInstructorToNonExistingCourse() {
+        // Arrange
+        Instructor instructor = new Instructor(1L, "John", "Doe", LocalDate.of(2020, 1, 15), new HashSet<>());
+        when(courseRepository.findById(99L)).thenReturn(Optional.empty());
+
+        // Act & Assert
+        Exception exception = assertThrows(RuntimeException.class, () -> instructorServices.addInstructorAndAssignToCourse(instructor, 99L));
+        assertEquals("Course not found", exception.getMessage());
+        verify(courseRepository, times(1)).findById(99L);
+        verify(instructorRepository, times(0)).save(instructor);
+    }
 
 
 }
