@@ -23,7 +23,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class InstructorServiceTest {
+ class InstructorServiceTest {
 
     @Mock
     private IInstructorRepository instructorRepository;
@@ -36,7 +36,7 @@ public class InstructorServiceTest {
 
     // tests simples CRUD
     @Test
-    public void testRetrieveAllInstructors() {
+    void testRetrieveAllInstructors() {
 
         Instructor instructor1 = new Instructor(1L, "John", "Doe", LocalDate.of(2020, 1, 15), null);
         Instructor instructor2 = new Instructor(2L, "Jane", "Smith", LocalDate.of(2021, 2, 20), null);
@@ -51,7 +51,7 @@ public class InstructorServiceTest {
         verify(instructorRepository, times(1)).findAll();
     }
     @Test
-    public void testAddInstructor() {
+     void testAddInstructor() {
 
         Instructor instructor = new Instructor(1L, "John", "Doe", LocalDate.of(2020, 1, 15), null);
         when(instructorRepository.save(instructor)).thenReturn(instructor);
@@ -65,7 +65,7 @@ public class InstructorServiceTest {
         verify(instructorRepository, times(1)).save(instructor);
     }
     @Test
-    public void testAddInstructorAndAssignToCourse() {
+     void testAddInstructorAndAssignToCourse() {
 
         Instructor instructor = new Instructor(1L, "John", "Doe", LocalDate.of(2020, 1, 15), new HashSet<>());
         Course course = new Course(1L, 1, TypeCourse.COLLECTIVE_ADULT, Support.SNOWBOARD, 100.0f, 60, null);
@@ -85,8 +85,8 @@ public class InstructorServiceTest {
     }
     //Tests avancés
     @Test
-    public void testAddInstructor_DuplicateValidation() {
-        Instructor instructor = new Instructor(1L, "John", "Doe", LocalDate.of(2020, 1, 15), new HashSet<>());
+    void testAddInstructor_DuplicateValidation() {
+            Instructor instructor = new Instructor(1L, "John", "Doe", LocalDate.of(2020, 1, 15), new HashSet<>());
         when(instructorRepository.findByNameAndSurname("John", "Doe")).thenReturn(Optional.of(instructor));
 
         Exception exception = assertThrows(RuntimeException.class, () -> instructorServices.addInstructor(instructor));
@@ -94,7 +94,7 @@ public class InstructorServiceTest {
         verify(instructorRepository, times(0)).save(instructor);
     }
     @Test
-    public void testAssignInstructorToNonExistingCourse() {
+     void testAssignInstructorToNonExistingCourse() {
         Instructor instructor = new Instructor(1L, "John", "Doe", LocalDate.of(2020, 1, 15), new HashSet<>());
         when(courseRepository.findById(99L)).thenReturn(Optional.empty());
 
@@ -104,7 +104,7 @@ public class InstructorServiceTest {
         verify(instructorRepository, times(0)).save(instructor);
     }
     @Test
-    public void testUpdateInstructor() {
+    void testUpdateInstructor() {
 
         Instructor existingInstructor = new Instructor(1L, "John", "Doe", LocalDate.of(2020, 1, 15), null);
         when(instructorRepository.findById(1L)).thenReturn(Optional.of(existingInstructor));
@@ -128,7 +128,7 @@ public class InstructorServiceTest {
         ));
     }
     @Test
-    public void testRetrieveInstructorsByRegistrationDate() {
+     void testRetrieveInstructorsByRegistrationDate() {
 
         Instructor instructor1 = new Instructor(1L, "John", "Doe", LocalDate.of(2020, 1, 15), new HashSet<>());
         Instructor instructor2 = new Instructor(2L, "Jane", "Smith", LocalDate.of(2021, 2, 20), new HashSet<>());
@@ -143,7 +143,7 @@ public class InstructorServiceTest {
         verify(instructorRepository, times(1)).findAllByRegistrationDateAfter(LocalDate.of(2020, 1, 1));
     }
     @Test
-    public void testRetrieveInstructorById_NotFound() {
+     void testRetrieveInstructorById_NotFound() {
 
         when(instructorRepository.findById(1L)).thenReturn(Optional.empty());
 
