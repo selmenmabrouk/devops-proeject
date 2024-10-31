@@ -26,6 +26,6 @@ public class Instructor implements Serializable {
 	String lastName;
 	LocalDate dateOfHire;
 	@OneToMany(mappedBy = "instructor", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-	Set<Course> courses;
+	private Set<Course> courses;
 
 }

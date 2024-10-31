@@ -8,7 +8,8 @@ import com.example.gestionstationskii.repositories.IInstructorRepository;
 import com.example.gestionstationskii.repositories.IRegistrationRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.util.List;
 @AllArgsConstructor
 @Service
@@ -16,7 +17,7 @@ public class CourseServicesImpl implements  ICourseServices{
 
     private ICourseRepository courseRepository;
     private IRegistrationRepository registrationRepository;
-
+    private static final Logger logger = LoggerFactory.getLogger(CourseServicesImpl.class);
     private final IInstructorRepository instructorRepository;
 
     @Override
@@ -26,13 +27,13 @@ public class CourseServicesImpl implements  ICourseServices{
         Course course = courseRepository.findById(courseId).orElse(null);
 
         if (instructor == null || course == null) {
-            System.out.println("Instructor or Course not found");
+            logger.info("Instructor or Course not found");
             return "Instructor or Course not found";
         }
 
         // Debugging: Print instructor and course info
-        System.out.println("Instructor ID: " + instructor.getNumInstructor());
-        System.out.println("Number of Courses: " + instructor.getCourses().size());
+        logger.info("Instructor ID: {}", instructor.getNumInstructor());
+        logger.info("Number of Courses: {}", instructor.getCourses().size());
 
         if (instructor.getCourses().size() >= 3) {
             return "Instructor cannot have more than 3 active courses";
@@ -47,6 +48,7 @@ public class CourseServicesImpl implements  ICourseServices{
 
         return "Instructor assigned to course successfully";
     }
+
 
 
     @Override

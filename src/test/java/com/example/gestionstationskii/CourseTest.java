@@ -25,7 +25,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)  // Ensure ordered execution
-public class CourseTest {
+class CourseTest {
 
     @Autowired
     private ICourseRepository courseRepository;
@@ -39,25 +39,25 @@ public class CourseTest {
     @Autowired
     ICourseServices cs;
 
-    private Course course;
+    private Course course1;
     private Registration registration;
 
     // Initialize a new course before each test to avoid null issues
     @BeforeEach
     void setup() {
-        course = new Course();
-        course.setLevel(1);
-        course.setPrice(150.0f);
-        course = cs.addCourse(course);  // Save the course to the repository for use in tests
+        course1 = new Course();
+        course1.setLevel(1);
+        course1.setPrice(150.0f);
+        course1 = cs.addCourse(course1);  // Save the course to the repository for use in tests
     }
 
     @Test
     @Order(1)
     void testAddCourse() {
         // Assert: Verify the course was saved and has a generated ID
-        assertNotNull(course);
-        assertNotNull(course.getNumCourse());
-        assertEquals(1, course.getLevel());
+        assertNotNull(course1);
+        assertNotNull(course1.getNumCourse());
+        assertEquals(1, course1.getLevel());
     }
 
     @Test
@@ -69,18 +69,18 @@ public class CourseTest {
         // Assert: Ensure the course list is not empty and contains the newly added course
         assertNotNull(courses);
         assertFalse(courses.isEmpty());
-        assertTrue(courses.stream().anyMatch(c -> c.getNumCourse().equals(course.getNumCourse())));
+        assertTrue(courses.stream().anyMatch(c -> c.getNumCourse().equals(course1.getNumCourse())));
     }
 
     @Test
     @Order(3)
     void testUpdateCourse() {
         // Arrange: Update the course's level and price
-        course.setLevel(2);
-        course.setPrice(200.0f);
+        course1.setLevel(2);
+        course1.setPrice(200.0f);
 
         // Act: Update the course using the service
-        Course updatedCourse = cs.updateCourse(course);
+        Course updatedCourse = cs.updateCourse(course1);
 
         // Assert: Ensure the updated course has the new values
         assertNotNull(updatedCourse);
@@ -92,11 +92,11 @@ public class CourseTest {
     @Order(4)
     void testRetrieveCourse_Success() {
         // Act: Retrieve the course by its ID
-        Course retrievedCourse = cs.retrieveCourse(course.getNumCourse());
+        Course retrievedCourse = cs.retrieveCourse(course1.getNumCourse());
 
         // Assert: Ensure the retrieved course matches the original course
         assertNotNull(retrievedCourse);
-        assertEquals(course.getNumCourse(), retrievedCourse.getNumCourse());
+        assertEquals(course1.getNumCourse(), retrievedCourse.getNumCourse());
     }
 
     @Test
@@ -117,11 +117,11 @@ public class CourseTest {
         registration = registrationRepository.save(registration);
 
         // Act: Assign the saved course to the new registration
-        String result = cs.assignCourseToRegistration(course.getNumCourse(), registration.getNumRegistration());
+        String result = cs.assignCourseToRegistration(course1.getNumCourse(), registration.getNumRegistration());
 
         // Assert: Validate the output message
         assertEquals(
-                "Course with ID " + course.getNumCourse() + " has been assigned to registration ID " + registration.getNumRegistration(),
+                "Course with ID " + course1.getNumCourse() + " has been assigned to registration ID " + registration.getNumRegistration(),
                 result
         );
 
@@ -129,11 +129,11 @@ public class CourseTest {
         Registration updatedRegistration = registrationRepository.findById(registration.getNumRegistration()).orElse(null);
         assertNotNull(updatedRegistration);
         assertNotNull(updatedRegistration.getCourse());
-        assertEquals(course.getNumCourse(), updatedRegistration.getCourse().getNumCourse());
+        assertEquals(course1.getNumCourse(), updatedRegistration.getCourse().getNumCourse());
 
         // Clean up
         registrationRepository.deleteById(registration.getNumRegistration());
-        courseRepository.deleteById(course.getNumCourse());
+        courseRepository.deleteById(course1.getNumCourse());
     }
     @Test
     @Order(6)
@@ -168,32 +168,32 @@ public class CourseTest {
     }
     @Test
     @Order(8)
-    void testAssignInstructorToCourse_LimitExceeded() {
+            void testAssignInstructorToCourse_LimitExceeded() {
 
-        Instructor instructor = new Instructor();
-        instructor.setFirstName("John");
-        instructor.setLastName("Doe");
-        instructor.setDateOfHire(LocalDate.now());
-        instructor = instructorRepository.save(instructor);
+            Instructor instructor = new Instructor();
+            instructor.setFirstName("John");
+            instructor.setLastName("Doe");
+            instructor.setDateOfHire(LocalDate.now());
+            instructor = instructorRepository.save(instructor);
 
-        for (int i = 1; i <= 3; i++) {
-            Course course = new Course();
-            course.setLevel(i);
-            course.setPrice(100.0f * i);
-            course.setInstructor(instructor);
-            courseRepository.save(course);
-        }
+            for (int i = 1; i <= 3; i++) {
+        Course course = new Course();
+        course.setLevel(i);
+        course.setPrice(100.0f * i);
+        course.setInstructor(instructor);
+        courseRepository.save(course);
+    }
 
 
-        Course newCourse = new Course();
+    Course newCourse = new Course();
         newCourse.setLevel(4);
         newCourse.setPrice(400.0f);
         courseRepository.save(newCourse);
 
-        String result = cs.assignInstructorToCourse(instructor.getNumInstructor(), newCourse.getNumCourse());
+    String result = cs.assignInstructorToCourse(instructor.getNumInstructor(), newCourse.getNumCourse());
 
-        // Assert: Vérifier que l'ajout est refusé
-        assertEquals("Instructor cannot have more than 3 active courses", result);
-    }
+    // Assert: Vérifier que l'ajout est refusé
+    assertEquals("Instructor cannot have more than 3 active courses", result);
+}
 
 }
