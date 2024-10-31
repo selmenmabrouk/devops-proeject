@@ -3,6 +3,7 @@ package com.example.gestionstationskii.controllers;
 import com.example.gestionstationskii.entities.Color;
 import com.example.gestionstationskii.entities.Piste;
 import com.example.gestionstationskii.entities.Skier;
+import com.example.gestionstationskii.services.IPisteServices;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;

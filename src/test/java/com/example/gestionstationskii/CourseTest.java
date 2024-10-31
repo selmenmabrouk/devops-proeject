@@ -168,32 +168,32 @@ class CourseTest {
     }
     @Test
     @Order(8)
-            void testAssignInstructorToCourse_LimitExceeded() {
+    void testAssignInstructorToCourse_LimitExceeded() {
 
-            Instructor instructor = new Instructor();
-            instructor.setFirstName("John");
-            instructor.setLastName("Doe");
-            instructor.setDateOfHire(LocalDate.now());
-            instructor = instructorRepository.save(instructor);
+        Instructor instructor = new Instructor();
+        instructor.setFirstName("John");
+        instructor.setLastName("Doe");
+        instructor.setDateOfHire(LocalDate.now());
+        instructor = instructorRepository.save(instructor);
 
-            for (int i = 1; i <= 3; i++) {
-        Course course = new Course();
-        course.setLevel(i);
-        course.setPrice(100.0f * i);
-        course.setInstructor(instructor);
-        courseRepository.save(course);
-    }
+        for (int i = 1; i <= 3; i++) {
+            Course course = new Course();
+            course.setLevel(i);
+            course.setPrice(100.0f * i);
+            course.setInstructor(instructor);
+            courseRepository.save(course);
+        }
 
 
-    Course newCourse = new Course();
+        Course newCourse = new Course();
         newCourse.setLevel(4);
         newCourse.setPrice(400.0f);
         courseRepository.save(newCourse);
 
-    String result = cs.assignInstructorToCourse(instructor.getNumInstructor(), newCourse.getNumCourse());
+        String result = cs.assignInstructorToCourse(instructor.getNumInstructor(), newCourse.getNumCourse());
 
-    // Assert: Vérifier que l'ajout est refusé
-    assertEquals("Instructor cannot have more than 3 active courses", result);
-}
+        // Assert: Vérifier que l'ajout est refusé
+        assertEquals("Instructor cannot have more than 3 active courses", result);
+    }
 
 }

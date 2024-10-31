@@ -2,6 +2,7 @@ package com.example.gestionstationskii.controllers;
 
 import com.example.gestionstationskii.entities.Subscription;
 import com.example.gestionstationskii.entities.TypeSubscription;
+import com.example.gestionstationskii.services.ISubscriptionServices;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
