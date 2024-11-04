@@ -10,7 +10,7 @@
 </parent>
 <groupId>com.example</groupId>
 <artifactId>gestion-station-skii</artifactId>
-<version>1.0-SNAPSHOT</version>
+<version>1.0.0</version>
 <name>gestion-station-skii</name>
 <description>gestion-station-skii</description>
 <properties>
@@ -83,7 +83,7 @@
         <repository>
             <id>deploymentRepo</id>
             <name>Nexus Repository</name>
-            <url>http://192.168.33.10:8081/repository/maven-snapshots/</url>
+            <url>http://192.168.33.10:8081/repository/maven-releases/</url>
         </repository>
     </distributionManagement>
 
