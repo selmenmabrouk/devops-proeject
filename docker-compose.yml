@@ -1,20 +1,29 @@
 version: '3'
 services:
-  mysql:
-    image: mysql:8
-    environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: mydb
+  mysql-db:
+    image: mysql:latest
+    container_name: docker-compose-mysql-db
     ports:
       - "3307:3306"
-
-  app:
-    image: leena2/projetdevops
-    ports:
-      - "8090:8090"
     environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/mydb
-      SPRING_DATASOURCE_USERNAME: root
-      SPRING_DATASOURCE_PASSWORD: root
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=skidb
+    networks:
+      - my-network
+
+  spring-boot-app:
+    image: leena2/lynadevops
+    container_name: docker-compose-spring-boot
+    ports:
+      - "8088:8089"
     depends_on:
-      - mysql
+      - mysql-db
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://docker-compose-mysql-db:3306/skidb?&createDatabaseIfNotExist=true&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=root
+    networks:
+      - my-network
+
+networks:
+  my-network:
