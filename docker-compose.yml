@@ -16,7 +16,7 @@ services:
   app-gestion-station-ski:
     depends_on:
       - mysqldb
-    image: balsenjdidi/gestion-station-ski-1.0.jar:1.0.0
+    image: balsenjdidi/gestion-station-ski-1.0.jar
     #build : ./
     restart: on-failure
     ports:
