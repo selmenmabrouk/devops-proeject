@@ -1,27 +1,20 @@
-version: '3.8'
-
+version: '3'
 services:
+  mysql:
+    image: mysql:8
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: mydb
+    ports:
+      - "3307:3306"
+
   app:
     image: selmen23/devopsproject-production-e2e-pipeline:latest
-    restart: always
-    build: .
     ports:
-      - "8089:8089"
+      - "8090:8090"
     environment:
-      MYSQL_HOST: database
-      MYSQL_USER: root
-      MYSQL_PASSWORD: root
-      MYSQL_PORT: 3306
-
-  database:
-    image: mysql
-    volumes:
-      - mysql-data:/var/lib/mysql
-    ports:
-      - "3306:3306"
-    environment:
-      MYSQL_DATABASE: ski_db
-      MYSQL_ROOT_PASSWORD: root
-
-volumes:
-  mysql-data:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/mydb
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+    depends_on:
+      - mysql
