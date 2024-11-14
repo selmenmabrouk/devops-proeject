@@ -14,6 +14,7 @@ services:
     ports:
       - "8089:8089"
     environment:
+      SPRING_APPLICATION_JSON: '{"server.port":8089}'
       SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/ski_db?createDatabaseIfNotExist=true&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: root
