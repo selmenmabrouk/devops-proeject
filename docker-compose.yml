@@ -10,6 +10,7 @@ services:
 
   app:
     image: selmen23/devopsproject-production-e2e-pipeline:latest
+    restart: always
     ports:
       - "8090:8090"
     environment:
