@@ -20,6 +20,7 @@ services:
     ports:
       - "3306:3306"
     environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://database:3306/stationSki?createDatabaseIfNotExist=true
       MYSQL_DATABASE: stationSki
       MYSQL_ROOT_PASSWORD: root
 
